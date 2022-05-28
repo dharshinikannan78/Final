@@ -1,0 +1,459 @@
+<ion-grid class=" ion-align-item-center">
+  <ion-row class="filterpanel ion-align-item-center ion-justify-content-center">
+    <ion-col size="2.5">
+      <ion-item lines="none">
+        <ion-label position="stacked">Start Date</ion-label>
+        <ion-input id="open-date-input-1" [(ngModel)]="from"></ion-input>
+        <ion-popover trigger="open-date-input-1" show-backdrop="true">
+          <ng-template>
+            <ion-datetime #popoverDatetime1 presentation="date-time" (ionChange)="from = popoverDatetime1.value">
+            </ion-datetime>
+          </ng-template>
+        </ion-popover>
+      </ion-item>
+    </ion-col>
+    <ion-col size="2.5">
+      <ion-item lines="none">
+        <ion-label position="stacked">End Date</ion-label>
+        <ion-input id="open-date-input-2" [(ngModel)]="to"></ion-input>
+        <ion-popover trigger="open-date-input-2" show-backdrop="true">
+          <ng-template>
+            <ion-datetime #popoverDatetime2 presentation="date-time" (ionChange)="to = popoverDatetime2.value">
+            </ion-datetime>
+          </ng-template>
+        </ion-popover>
+      </ion-item>
+    </ion-col>
+    <ion-col size="2.5" class="ion-align-self-center ion-justify-content-center">
+      <ion-item class="ion-no-padding" lines="none">
+        <ion-label>User</ion-label>
+        <ion-select [(ngModel)]="user" class="ion-no-padding" interface="popover" placeholder="Select One">
+          <ion-select-option value="Finn">Finn</ion-select-option>
+          <ion-select-option value="Bob">Bob</ion-select-option>
+          <ion-select-option value="Ray">Ray</ion-select-option>
+          <ion-select-option value="Alex">Alex</ion-select-option>
+          <ion-select-option value="Geetha">Geetha</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-col>
+    <ion-col size="2.5" class="ion-align-self-center ion-justify-content-center">
+      <ion-item class="ion-no-padding" lines="none">
+        <ion-label>process</ion-label>
+        <ion-select [(ngModel)]="process" class="ion-no-padding" interface="popover" placeholder="Select One">
+          <ion-select-option value="Air Dry">Air Dry</ion-select-option>
+          <ion-select-option value="Oven Dry">Oven Dry</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-col>
+    <ion-col size="2" class="ion-align-self-center ion-justify-content-center">
+      <ion-button (click)="loadReport()" color="primary">Filter</ion-button>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+
+<ion-text color="dark">
+  <h2>Report</h2>
+</ion-text>
+<ion-grid class="ReportTable" style="text-align: center;">
+
+
+
+  <div class="tables">
+    <ion-row class="header">
+      <ion-col size=".5">
+        S.No
+      </ion-col>
+      <ion-col size="1.5">
+        Trolley No
+      </ion-col>
+      <ion-col size="2">
+        Date & Time IN
+      </ion-col>
+      <ion-col size="2">
+        Date & Time OUT
+      </ion-col>
+      <ion-col size="1">
+        Timer
+      </ion-col>
+      <ion-col size="2">
+        Operator Name
+      </ion-col>
+      <ion-col size="2">
+        Status
+      </ion-col>
+      <ion-col size="1">
+        Function
+      </ion-col>
+    </ion-row>
+    <div *ngFor="let item of _trayDetails; let i = index;">
+      <ion-row class="ion-align-items-center">
+        <ion-col size=".5">
+          {{ i + 1 }}
+        </ion-col>
+        <ion-col size="1.5">
+          {{ item.batchNo }}
+        </ion-col>
+        <ion-col size="2">
+          {{ item.dateTime }}
+        </ion-col>
+        <ion-col size="2">
+          {{ _count[i] }}
+        </ion-col>
+        <ion-col size="1">
+          {{ _hour }} : {{ _minutes }} : {{ _sec }}
+        </ion-col>
+        <ion-col size="2">
+          {{ item.user }}
+        </ion-col>
+        <ion-col size="2">
+          <ion-chip color="success">
+            <ion-label color="success">{{ item.status }}</ion-label>
+            <!-- <ion-label color="success" *ngIf="item.process == 'Air Dry'">{{ statusAir }}</ion-label>
+            <ion-label color="succcess" *ngIf="item.process == 'Oven Dry'">{{ statusOven }}</ion-label> -->
+          </ion-chip>
+        </ion-col>
+        <ion-col size="1">
+          <ion-button id="trigger-button{{i}}" size="small" fill="outline">
+            <ion-icon name="color-wand-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </div>
+  </div>
+</ion-grid>
+
+<div *ngFor="let item of _trayDetails; let i = index;">
+  <ion-modal trigger="trigger-button{{i}}">
+    <ng-template>
+      <ion-grid class="ion-no-margin">
+        <form (ngSubmit)="uploadEntity()" [formGroup]="inputForm">
+          <ion-row>
+            <ion-col class="ion-align-self-center">
+              <ion-item lines="none">
+                <ion-label>Former Size</ion-label>
+                <ion-select [(ngModel)]="item.formerType" formControlName="formerType" okText="Okay" cancelText="Dismiss">
+                  <ion-select-option value="XS">XS</ion-select-option>
+                  <ion-select-option value="S">S</ion-select-option>
+                  <ion-select-option value="M">M</ion-select-option>
+                  <ion-select-option value="L">L</ion-select-option>
+                  <ion-select-option value="XL">XL</ion-select-option>
+                  <ion-select-option value="XXL">XXL</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+            <ion-col>
+              <ion-item lines="none">
+                <ion-label position="stacked">Quantity</ion-label>
+                <ion-input [(ngModel)]="item.noOfFormer" formControlName="noOfFormer" placeholder="30"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col>
+              <ion-item lines="none">
+                <ion-label position="stacked">Trolley No</ion-label>
+                <ion-input [(ngModel)]="item.batchNo" formControlName="batchNo" placeholder="Trolley23"></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col>
+              <ion-item lines="none">
+                <ion-label position="stacked">UserId</ion-label>
+                <ion-input [(ngModel)]="item.userId" formControlName="userId" placeholder="Trolley23"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col>
+              <ion-item lines="none">
+                <ion-label position="stacked">Start Date & Time</ion-label>
+                <ion-input id="open-date-input-1" formControlName="dateTime" [(ngModel)]="item.dateTime"></ion-input>
+                <ion-popover trigger="open-date-input-1" show-backdrop="true">
+                  <ng-template>
+                    <ion-datetime #popoverDatetime1 presentation="date-time"
+                      (ionChange)="dateValue1 = formatDate(popoverDatetime1.value)"></ion-datetime>
+                  </ng-template>
+                </ion-popover>
+              </ion-item>
+            </ion-col>
+            <ion-col class="ion-align-self-end">
+              <ion-item lines="none">
+                <ion-label position="stacked">Process</ion-label>
+                <ion-select [(ngModel)]="item.process" formControlName="process" interface="popover" placeholder="Air Dry">
+                  <ion-select-option value="Air Dry">Air Dry</ion-select-option>
+                  <ion-select-option value="Oven Dry">Oven Dry</ion-select-option>
+                  <ion-select-option value="ReOven">Re Oven</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row *ngIf="item.process == 'ReOven'">
+            <ion-col>
+              <ion-item lines="none">
+                <ion-label position="stacked">End Date & Time</ion-label>
+                <ion-input id="open-date-input-2" formControlName="dateTime" [value]="dateValue2"></ion-input>
+                <ion-popover trigger="open-date-input-2" show-backdrop="true">
+                  <ng-template>
+                    <ion-datetime #popoverDatetime2 presentation="date-time"
+                      (ionChange)="dateValue2 = formatDate(popoverDatetime2.value)"></ion-datetime>
+                  </ng-template>
+                </ion-popover>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-item lines="none">
+                <ion-label position="stacked">Operator Name</ion-label>
+                <ion-input [(ngModel)]="item.user" formControlName="user" placeholder="Finn"></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col class="ion-align-self-end">
+              <ion-item lines="none">
+                <ion-label position="stacked">Process</ion-label>
+                <ion-select [(ngModel)]="item.status" formControlName="status" interface="popover" placeholder="Shift">
+                  <ion-select-option value="IN Progress">IN Progress</ion-select-option>
+                  <ion-select-option value="Completed">Completed</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-item lines="none">
+                <ion-label position="stacked">Additional Info</ion-label>
+                <ion-textarea [(ngModel)]="item.additionalInfo" formControlName="additionalInfo" placeholder="Enter more information here...">
+                </ion-textarea>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-padding">
+            <ion-col style="padding-right: 21px;">
+              <ion-button type="submit" class="dbutton" expand="block">Save Changes</ion-button>
+            </ion-col>
+          </ion-row>
+        </form>
+      </ion-grid>
+    </ng-template>
+  </ion-modal>
+</div>
+
+
+<!-- </ion-col>
+    </ion-row>
+    <ion-row class="ion-align-items-center">
+      <ion-col size=".5">
+        23
+      </ion-col>
+      <ion-col size="1.5">
+        Trolley15
+      </ion-col>
+      <ion-col size="1.5">
+        Jun 28, 3:53
+      </ion-col>
+      <ion-col size="1.5">
+        Jun 29, 3:53
+      </ion-col>
+      <ion-col size="1">
+        6:25
+      </ion-col>
+      <ion-col size="2">
+        Mohamed salman khan
+      </ion-col>
+      <ion-col size="2">
+        <ion-chip color="warning">
+          <ion-label color="warning">IN Process</ion-label>
+        </ion-chip>
+      </ion-col>
+      <ion-col size="2">
+        <ion-button size="small" fill="outline">
+          <ion-icon name="color-wand-outline"></ion-icon>
+        </ion-button>
+        <ion-button size="small" color="danger" fill="outline">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="ion-align-items-center">
+      <ion-col size=".5">
+        3
+      </ion-col>
+      <ion-col size="1.5">
+        Trolley6
+      </ion-col>
+      <ion-col size="1.5">
+        07-06-22 5:48
+      </ion-col>
+      <ion-col size="1.5">
+        07-06-22 5:48
+      </ion-col>
+      <ion-col size="1">
+        13:56
+      </ion-col>
+      <ion-col size="2">
+        Oscar
+      </ion-col>
+      <ion-col size="2">
+        <ion-chip color="success">
+          <ion-label color="success">Completed</ion-label>
+        </ion-chip>
+      </ion-col>
+      <ion-col size="2">
+        <ion-button size="small" fill="outline">
+          <ion-icon name="color-wand-outline"></ion-icon>
+        </ion-button>
+        <ion-button size="small" color="danger" fill="outline">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+  for oven table
+  <ion-text color="dark">
+    <h2>Oven Dry Station</h2>
+  </ion-text>
+
+
+
+  <ion-grid style="text-align: center;">
+    <ion-row class="header">
+      <ion-col size=".5">
+        S.No
+      </ion-col>
+      <ion-col size="1.5">
+        Trolley<br/>No
+      </ion-col>
+      <ion-col size="1.5">
+        Date & Time IN
+      </ion-col>
+      <ion-col size="1.5">
+        Date & Time OUT
+      </ion-col>
+      <ion-col size="1">
+        Timer
+      </ion-col>
+      <ion-col size="2">
+        Operator Name
+      </ion-col>
+      <ion-col size="2">
+        status
+      </ion-col>
+      <ion-col size="2">
+        Function
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="ion-align-items-center">
+      <ion-col size=".5">
+        22
+      </ion-col>
+      <ion-col size="1.5">
+        Trolley21
+      </ion-col>
+      <ion-col size="1.5">
+        May 15, 5:48
+      </ion-col>
+      <ion-col size="1.5">
+        May 16, 5:48
+      </ion-col>
+      <ion-col size="1">
+        4:56
+      </ion-col>
+      <ion-col size="2">
+        Ray
+      </ion-col>
+      <ion-col size="2">
+        <ion-chip color="success">
+          <ion-label color="success">IN Process</ion-label>
+        </ion-chip>
+      </ion-col>
+      <ion-col size="2">
+        <ion-button size="small" fill="outline">
+          <ion-icon name="color-wand-outline"></ion-icon>
+        </ion-button>
+        <ion-button size="small" color="danger" fill="outline">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+
+
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-align-items-center">
+      <ion-col size=".5">
+        23
+      </ion-col>
+      <ion-col size="1.5">
+        Trolley15
+      </ion-col>
+      <ion-col size="1.5">
+        Jun 28, 3:53
+      </ion-col>
+      <ion-col size="1.5">
+        Jun 29, 3:53
+      </ion-col>
+      <ion-col size="1">
+        6:25
+      </ion-col>
+      <ion-col size="2">
+        Mohamed salman khan
+      </ion-col>
+      <ion-col size="2">
+        <ion-chip color="warning">
+          <ion-label color="warning">IN Process</ion-label>
+        </ion-chip>
+      </ion-col>
+      <ion-col size="2">
+        <ion-button size="small" fill="outline">
+          <ion-icon name="color-wand-outline"></ion-icon>
+        </ion-button>
+        <ion-button size="small" color="danger" fill="outline">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="ion-align-items-center">
+      <ion-col size=".5">
+        3
+      </ion-col>
+      <ion-col size="1.5">
+        Trolley6
+      </ion-col>
+      <ion-col size="1.5">
+        07-06-22 5:48
+      </ion-col>
+      <ion-col size="1.5">
+        07-06-22 5:48
+      </ion-col>
+      <ion-col size="1">
+        13:56
+      </ion-col>
+      <ion-col size="2">
+        Oscar
+      </ion-col>
+      <ion-col size="2">
+        <ion-chip color="success">
+          <ion-label color="success">Completed</ion-label>
+        </ion-chip>
+      </ion-col>
+      <ion-col size="2">
+        <ion-button size="small" fill="outline">
+          <ion-icon name="color-wand-outline"></ion-icon>
+        </ion-button>
+        <ion-button size="small" color="danger" fill="outline">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>  
+  </ion-grid> -->
+
+
+
+<ion-button (click)="generateExcel()">
+  Generate Excel
+</ion-button>
+
